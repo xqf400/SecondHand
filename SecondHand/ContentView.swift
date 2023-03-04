@@ -38,9 +38,9 @@ func setCrumbDate() {
 }
 func setCrumbWeather(str: String) {
     if (str + " ▶").utf8CString.count <= 256 {
-        StatusManager.sharedInstance().setCrumbWeather(str)
+        StatusManager.sharedInstance().setCrumb(str)
     } else {
-        StatusManager.sharedInstance().setCrumbWeather("Length Error")
+        StatusManager.sharedInstance().setCrumb("Length Error")
     }
 }
 
@@ -55,7 +55,7 @@ struct ContentView: View, WeatherManagerDelegate {
     
     @State private var timeTextEnabled: Bool = StatusManager.sharedInstance().isTimeOverridden()
     @State private var crumbTextEnabled: Bool = StatusManager.sharedInstance().isCrumbOverridden()
-    @State private var crumbWeatherTextEnabled: Bool = StatusManager.sharedInstance().isCrumbWeatherOverridden()
+    @State private var crumbWeatherTextEnabled: Bool = StatusManager.sharedInstance().isCrumbOverridden()
     
     @StateObject var locationDataManager = LocationManager()
 
@@ -125,11 +125,11 @@ struct ContentView: View, WeatherManagerDelegate {
                     } failure: { error in
                         print(error)
                     }
-                    crumbWeatherTextEnabled = StatusManager.sharedInstance().isCrumbWeatherOverridden()
+                    crumbWeatherTextEnabled = StatusManager.sharedInstance().isCrumbOverridden()
                 } else {
                     UserDefaults.standard.set(false, forKey: "WeatherIsEnabled")
-                    StatusManager.sharedInstance().unsetWeatherCrumb()
-                    crumbWeatherTextEnabled = StatusManager.sharedInstance().isCrumbWeatherOverridden()
+                    StatusManager.sharedInstance().unsetCrumb()
+                    crumbWeatherTextEnabled = StatusManager.sharedInstance().isCrumbOverridden()
                 }
             }
             .padding(10)
@@ -144,27 +144,16 @@ struct ContentView: View, WeatherManagerDelegate {
                 }
             }
             
-            if UserDefaults.standard.bool(forKey: "DateIsEnabled") == true {
+            if UserDefaults.standard.bool(forKey: "DateIsEnabled") == true && UserDefaults.standard.bool(forKey: "WeatherIsEnabled") == false{
                 // check if it was disabled elsewhere
                 UserDefaults.standard.set(crumbTextEnabled, forKey: "DateIsEnabled")
             }
-            if UserDefaults.standard.bool(forKey: "WeatherIsEnabled") == true {
+            if UserDefaults.standard.bool(forKey: "WeatherIsEnabled") == true && UserDefaults.standard.bool(forKey: "DateIsEnabled") == false {
                 // check if it was disabled elsewhere
                 UserDefaults.standard.set(crumbWeatherTextEnabled, forKey: "WeatherIsEnabled")
             }
             networkManager.delegate = self
             
-            guard let lang = locationDataManager.locationManager.location?.coordinate.latitude else {
-                return
-            }
-            guard let long = locationDataManager.locationManager.location?.coordinate.longitude else {
-                return
-            }
-            networkManager.fetchWeather(lat: lang, lon: long) { str in
-                print("got weather \(str)")
-            } failure: { error in
-                print(error)
-            }
 
             
             backgroundController.setup()

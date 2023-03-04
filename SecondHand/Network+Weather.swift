@@ -56,7 +56,7 @@ struct DailyWeatherModel {
     let pressure: Int
     let windSpeed: Double
     var minMaxTemp: String {
-        return "Макс. \(maxTemp), мин. \(minTemp)"
+        return "Маx. \(maxTemp), Min. \(minTemp)"
     }
 }
 
