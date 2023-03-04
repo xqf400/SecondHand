@@ -22,7 +22,7 @@ struct BackgroundOption: Identifiable {
 
 class BackgroundFileUpdaterController: ObservableObject {
     static let shared = BackgroundFileUpdaterController()
-    public var time = 3600.0
+    public var time = 180.0
     public var timer: Timer? = nil
     
     func setup() {
@@ -53,6 +53,7 @@ class BackgroundFileUpdaterController: ObservableObject {
     
     func updateTime() {
         Task {
+            ApplicationMonitor.shared.sendNotification(title: "updated", message: "up")
             // apply to the timer
             if UserDefaults.standard.bool(forKey: "TimeIsEnabled") == true {
                 setTimeSeconds()

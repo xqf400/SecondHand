@@ -25,14 +25,41 @@ struct SecondHandApp: App {
             StatusManager.sharedInstance().setIsMDCMode(false)
     #else
         var supported = false
-        if #unavailable(iOS 15.6.1) {
+        var maybeSupported = false
+        var needsTrollStore = false
+        
+        if #available(iOS 16.3, *) {
+//            supported = false
+        } else if #available(iOS 16.2, *) {
+            if UserDefaults.standard.bool(forKey: "ShowUnsupported") {
+                maybeSupported = true
+            } else {
+                supported = true
+            }
+        } else if #available(iOS 16.0, *) {
             supported = true
+        } else if #available(iOS 15.7.2, *) {
+//            supported = false
+        } else if #available(iOS 15.0, *) {
+            supported = true
+        } else if #available(iOS 14.0, *) {
+            supported = true
+            needsTrollStore = true
         }
         
-        if !supported {
+        if maybeSupported {
+            UIApplication.shared.alert(title: "Not Supported", body: "This version of iOS is not supported. Please close the app.", withButton: false)
+            UIApplication.shared.confirmAlert(title: "Not Supported", body: "This version of iOS is likely not supported. Unless you know for certain that it is, please close the app.\n\nAre you certain this version is supported? The app will relaunch.", onOK: {
+                UserDefaults.standard.set(false, forKey: "ShowUnsupported")
+                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+                Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+                    exit(0)
+                }
+            })
+        } else if !supported {
             UIApplication.shared.alert(title: "Not Supported", body: "This version of iOS is not supported. Please close the app.", withButton: false)
         } else {
-            getRootFS(needsTrollStore: true)
+            getRootFS(needsTrollStore: needsTrollStore)
         }
     #endif
     }

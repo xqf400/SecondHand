@@ -54,6 +54,16 @@ extension ApplicationMonitor
     func stop() {
         self.cancelApplicationQuitNotification()
     }
+    
+    func sendNotification(title: String, message: String)
+    {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = message
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request)
+    }
 }
 
 private extension ApplicationMonitor
@@ -89,15 +99,7 @@ private extension ApplicationMonitor
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [UserNotification.appStoppedRunning.rawValue])
     }
     
-    func sendNotification(title: String, message: String)
-    {
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = message
-        
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-        UNUserNotificationCenter.current().add(request)
-    }
+
 }
 
 private extension ApplicationMonitor

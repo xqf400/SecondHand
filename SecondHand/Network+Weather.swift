@@ -15,7 +15,6 @@ private let apiKey = "a6b243f000737fa523434d1e8fc4d1a7"
 
 let dailyUrl = "https://api.openweathermap.org/data/2.5/weather?&appid=\(apiKey)&units=metric&lang=en"
 
-var networkManager = Network()
 
 struct DailyWeatherMain: Codable {
     let temp: Double
@@ -60,44 +59,32 @@ struct DailyWeatherModel {
     }
 }
 
-protocol WeatherManagerDelegate {
-    func didUpdateWeather(weather: DailyWeatherModel)
-}
 
 
-//MARK: Network
-final class Network {
-    var delegate: WeatherManagerDelegate?
-    func fetchWeather (lat: Double, lon: Double, success: @escaping (_ str: String) -> Void, failure: @escaping (_ error: String) -> Void){
-        let locatedDailyUrl = dailyUrl + "&lon=\(lon)&lat=\(lat)"
-        AF.request(locatedDailyUrl).responseDecodable(of: DailyWeather.self) { [weak self] response in
-            switch response.result {
-            case .success(let weather):
-                print("value: \(weather)")
-                let temp = "\(weather.main.temp) Grad"
-                success(temp)
-            case .failure(let error):
-                print(error.localizedDescription)
-                failure(error.localizedDescription)
-            }
-        }
-    }
-    
-}
+
 
 func fetchWeather (lat: Double, lon: Double, success: @escaping (_ str: String) -> Void, failure: @escaping (_ error: String) -> Void){
-    let locatedDailyUrl = dailyUrl + "&lon=\(lon)&lat=\(lat)"
-    AF.request(locatedDailyUrl).responseDecodable(of: DailyWeather.self) { response in
-        switch response.result {
-        case .success(let weather):
-            print("weather: \(weather)")
+    let locatedDailyUrl = URL(string: dailyUrl + "&lon=\(lon)&lat=\(lat)")
+    let session = URLSession.shared
+    let request = URLRequest(url: locatedDailyUrl!)
+          
+     let task = session.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+         guard error == nil else {
+             return
+         }
+         guard let data = data else {
+             return
+         }
+              
+        do {
+            let weather = try JSONDecoder().decode(DailyWeather.self, from: data)
             let temp = Double(round(10 * weather.main.temp) / 10)
-            print("temp: \(temp)")
             let tempStr = "\(temp) Grad"
             success(tempStr)
-        case .failure(let error):
-            print(error.localizedDescription)
-            failure(error.localizedDescription)
+        } catch let error {
+          print("malle error ",error.localizedDescription)
         }
-    }
+     })
+     task.resume()
+
 }

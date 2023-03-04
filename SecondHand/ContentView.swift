@@ -36,13 +36,14 @@ func setCrumbDate() {
         StatusManager.sharedInstance().setCrumb("Length Error")
     }
 }
+/*
 func setCrumbWeather(str: String) {
     if (str + " ▶").utf8CString.count <= 256 {
         StatusManager.sharedInstance().setCrumb(str)
     } else {
         StatusManager.sharedInstance().setCrumb("Length Error")
     }
-}
+}*/
 func setCrumbWeather() {
     let locationDataManager = LocationManager()
     guard let lat = locationDataManager.locationManager.location?.coordinate.latitude else {
@@ -65,17 +66,15 @@ func setCrumbWeather() {
 
 
 
-struct ContentView: View, WeatherManagerDelegate {
-    func didUpdateWeather(weather: DailyWeatherModel) {
-        //setCrumbWeather(str: "test")
-    }
+struct ContentView: View {
+
 
     
     @State private var timeTextEnabled: Bool = StatusManager.sharedInstance().isTimeOverridden()
     @State private var crumbTextEnabled: Bool = StatusManager.sharedInstance().isCrumbOverridden()
     @State private var crumbWeatherTextEnabled: Bool = StatusManager.sharedInstance().isCrumbOverridden()
     
-    @StateObject var locationDataManager = LocationManager()
+    //@StateObject var locationDataManager = LocationManager()
 
     
     //@State private var timeAs24: Bool = UserDefaults.standard.bool(forKey: "Time24Hour")
@@ -87,7 +86,7 @@ struct ContentView: View, WeatherManagerDelegate {
     var body: some View {
         VStack {
             Text(timeTextEnabled || crumbTextEnabled || crumbWeatherTextEnabled ? "Running" : "Stopped")
-                .foregroundColor(timeTextEnabled || crumbTextEnabled ? .green : .red)
+                .foregroundColor(timeTextEnabled || crumbTextEnabled || crumbWeatherTextEnabled ? .green : .red)
                 .font(.title2)
                 .padding(20)
             
@@ -120,7 +119,13 @@ struct ContentView: View, WeatherManagerDelegate {
                 if new {
                     UserDefaults.standard.set(true, forKey: "DateIsEnabled")
                     setCrumbDate()
-                    crumbTextEnabled = StatusManager.sharedInstance().isCrumbOverridden()
+                    if StatusManager.sharedInstance().isCrumbOverridden() {
+                        crumbTextEnabled = true
+                    }else{
+                        crumbTextEnabled = false
+                    }
+                    UserDefaults.standard.set(crumbTextEnabled, forKey: "DateIsEnabled")
+                    //crumbTextEnabled = StatusManager.sharedInstance().isCrumbOverridden()
                 } else {
                     UserDefaults.standard.set(false, forKey: "DateIsEnabled")
                     StatusManager.sharedInstance().unsetCrumb()
@@ -133,19 +138,13 @@ struct ContentView: View, WeatherManagerDelegate {
                 if new {
                     UserDefaults.standard.set(true, forKey: "WeatherIsEnabled")
                     setCrumbWeather()
-                    /*
-                    guard let lang = locationDataManager.locationManager.location?.coordinate.latitude else {
-                        return
+                    if StatusManager.sharedInstance().isCrumbOverridden() {
+                        crumbWeatherTextEnabled = true
+                    }else{
+                        crumbWeatherTextEnabled = false
                     }
-                    guard let long = locationDataManager.locationManager.location?.coordinate.longitude else {
-                        return
-                    }
-                    networkManager.fetchWeather(lat: lang, lon: long) { str in
-                        setCrumbWeather(str: str)
-                    } failure: { error in
-                        print(error)
-                    }*/
-                    crumbWeatherTextEnabled = StatusManager.sharedInstance().isCrumbOverridden()
+                    UserDefaults.standard.set(crumbWeatherTextEnabled, forKey: "DateIsEnabled")
+                    //crumbWeatherTextEnabled = StatusManager.sharedInstance().isCrumbOverridden()
                 } else {
                     UserDefaults.standard.set(false, forKey: "WeatherIsEnabled")
                     StatusManager.sharedInstance().unsetCrumb()
@@ -172,9 +171,8 @@ struct ContentView: View, WeatherManagerDelegate {
                 // check if it was disabled elsewhere
                 UserDefaults.standard.set(crumbWeatherTextEnabled, forKey: "WeatherIsEnabled")
             }
-            networkManager.delegate = self
             
-
+            setCrumbWeather()
             
             backgroundController.setup()
         }
