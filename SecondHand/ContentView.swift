@@ -36,10 +36,29 @@ func setCrumbDate() {
         StatusManager.sharedInstance().setCrumb("Length Error")
     }
 }
+func setCrumbWeather(str: String) {
+    if (str + " ▶").utf8CString.count <= 256 {
+        StatusManager.sharedInstance().setCrumbWeather(str)
+    } else {
+        StatusManager.sharedInstance().setCrumbWeather("Length Error")
+    }
+}
 
-struct ContentView: View {
+
+
+
+struct ContentView: View, WeatherManagerDelegate {
+    func didUpdateWeather(weather: DailyWeatherModel) {
+        setCrumbWeather(str: "test")
+    }
+
+    
     @State private var timeTextEnabled: Bool = StatusManager.sharedInstance().isTimeOverridden()
     @State private var crumbTextEnabled: Bool = StatusManager.sharedInstance().isCrumbOverridden()
+    @State private var crumbWeatherTextEnabled: Bool = StatusManager.sharedInstance().isCrumbWeatherOverridden()
+    
+    @StateObject var locationDataManager = LocationManager()
+
     
     //@State private var timeAs24: Bool = UserDefaults.standard.bool(forKey: "Time24Hour")
     
@@ -49,7 +68,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text(timeTextEnabled || crumbTextEnabled ? "Running" : "Stopped")
+            Text(timeTextEnabled || crumbTextEnabled || crumbWeatherTextEnabled ? "Running" : "Stopped")
                 .foregroundColor(timeTextEnabled || crumbTextEnabled ? .green : .red)
                 .font(.title2)
                 .padding(20)
@@ -91,6 +110,29 @@ struct ContentView: View {
                 }
             }
             .padding(10)
+            // MARK: Weather
+            Toggle("Weather", isOn: $crumbWeatherTextEnabled).onChange(of: crumbWeatherTextEnabled) { new in
+                if new {
+                    UserDefaults.standard.set(true, forKey: "WeatherIsEnabled")
+                    guard let lang = locationDataManager.locationManager.location?.coordinate.latitude else {
+                        return
+                    }
+                    guard let long = locationDataManager.locationManager.location?.coordinate.longitude else {
+                        return
+                    }
+                    networkManager.fetchWeather(lat: lang, lon: long) { str in
+                        setCrumbWeather(str: str)
+                    } failure: { error in
+                        print(error)
+                    }
+                    crumbWeatherTextEnabled = StatusManager.sharedInstance().isCrumbWeatherOverridden()
+                } else {
+                    UserDefaults.standard.set(false, forKey: "WeatherIsEnabled")
+                    StatusManager.sharedInstance().unsetWeatherCrumb()
+                    crumbWeatherTextEnabled = StatusManager.sharedInstance().isCrumbWeatherOverridden()
+                }
+            }
+            .padding(10)
             
         }
         .onAppear {
@@ -106,6 +148,24 @@ struct ContentView: View {
                 // check if it was disabled elsewhere
                 UserDefaults.standard.set(crumbTextEnabled, forKey: "DateIsEnabled")
             }
+            if UserDefaults.standard.bool(forKey: "WeatherIsEnabled") == true {
+                // check if it was disabled elsewhere
+                UserDefaults.standard.set(crumbWeatherTextEnabled, forKey: "WeatherIsEnabled")
+            }
+            networkManager.delegate = self
+            
+            guard let lang = locationDataManager.locationManager.location?.coordinate.latitude else {
+                return
+            }
+            guard let long = locationDataManager.locationManager.location?.coordinate.longitude else {
+                return
+            }
+            networkManager.fetchWeather(lat: lang, lon: long) { str in
+                print("got weather \(str)")
+            } failure: { error in
+                print(error)
+            }
+
             
             backgroundController.setup()
         }

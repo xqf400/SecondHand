@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		055E46C529B3431400E0C01D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 055E46C429B3431400E0C01D /* Alamofire */; };
+		055E46CE29B347F700E0C01D /* Network+Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055E46CD29B347F600E0C01D /* Network+Weather.swift */; };
 		6F24806A29B1A0B000F2DAA2 /* SecondHandApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24806929B1A0B000F2DAA2 /* SecondHandApp.swift */; };
 		6F24806C29B1A0B000F2DAA2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24806B29B1A0B000F2DAA2 /* ContentView.swift */; };
 		6F24806E29B1A0B100F2DAA2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F24806D29B1A0B100F2DAA2 /* Assets.xcassets */; };
@@ -29,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		055E46CD29B347F600E0C01D /* Network+Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Network+Weather.swift"; sourceTree = "<group>"; };
 		6F24806629B1A0B000F2DAA2 /* SecondHand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SecondHand.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F24806929B1A0B000F2DAA2 /* SecondHandApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondHandApp.swift; sourceTree = "<group>"; };
 		6F24806B29B1A0B000F2DAA2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -67,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				055E46C529B3431400E0C01D /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,6 +108,7 @@
 				6F24806D29B1A0B100F2DAA2 /* Assets.xcassets */,
 				6F24806F29B1A0B100F2DAA2 /* Preview Content */,
 				6F24809029B1A41700F2DAA2 /* AppDelegate.swift */,
+				055E46CD29B347F600E0C01D /* Network+Weather.swift */,
 			);
 			path = SecondHand;
 			sourceTree = "<group>";
@@ -182,6 +187,9 @@
 			dependencies = (
 			);
 			name = SecondHand;
+			packageProductDependencies = (
+				055E46C429B3431400E0C01D /* Alamofire */,
+			);
 			productName = SecondHand;
 			productReference = 6F24806629B1A0B000F2DAA2 /* SecondHand.app */;
 			productType = "com.apple.product-type.application";
@@ -211,6 +219,9 @@
 				Base,
 			);
 			mainGroup = 6F24805D29B1A0B000F2DAA2;
+			packageReferences = (
+				055E46C329B3431400E0C01D /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
 			productRefGroup = 6F24806729B1A0B000F2DAA2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -247,6 +258,7 @@
 				6F2480A529B2813600F2DAA2 /* String++.swift in Sources */,
 				6F24809A29B1A55700F2DAA2 /* helpers.m in Sources */,
 				6F24808E29B1A29100F2DAA2 /* StatusSetter15.m in Sources */,
+				055E46CE29B347F700E0C01D /* Network+Weather.swift in Sources */,
 				6F24808D29B1A29100F2DAA2 /* StatusSetter14.m in Sources */,
 				6F24807D29B1A11E00F2DAA2 /* LocationManager.swift in Sources */,
 				6F2480A329B2812500F2DAA2 /* Alert++.swift in Sources */,
@@ -385,13 +397,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SecondHand/Preview Content\"";
-				DEVELOPMENT_TEAM = 2P4CP47H76;
+				DEVELOPMENT_TEAM = L2CJ78AL3T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SecondHand/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Second Hand";
+				INFOPLIST_KEY_CFBundleDisplayName = "Second Hand1";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "SecondHand runs in background to keep the time changing. Usually iOS kills such apps after a period of time. But Cowabunga tricks iOS by requesting location data thus allowiing much longer sessions. Data is never stored anywhere, only fetched.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "SecondHand runs in background to keep the time changing. Usually iOS kills such apps after a period of time. But Cowabunga tricks iOS by requesting location data thus allowiing much longer sessions. Data is never stored anywhere, only fetched.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "SecondHand runs in background to keep the time changing. Usually iOS kills such apps after a period of time. But Cowabunga tricks iOS by requesting location data thus allowiing much longer sessions. Data is never stored anywhere, only fetched.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -403,7 +416,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leemin.SecondHand;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leemin.SecondHand1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -425,13 +438,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SecondHand/Preview Content\"";
-				DEVELOPMENT_TEAM = 2P4CP47H76;
+				DEVELOPMENT_TEAM = L2CJ78AL3T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SecondHand/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Second Hand";
+				INFOPLIST_KEY_CFBundleDisplayName = "Second Hand1";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "SecondHand runs in background to keep the time changing. Usually iOS kills such apps after a period of time. But Cowabunga tricks iOS by requesting location data thus allowiing much longer sessions. Data is never stored anywhere, only fetched.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "SecondHand runs in background to keep the time changing. Usually iOS kills such apps after a period of time. But Cowabunga tricks iOS by requesting location data thus allowiing much longer sessions. Data is never stored anywhere, only fetched.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "SecondHand runs in background to keep the time changing. Usually iOS kills such apps after a period of time. But Cowabunga tricks iOS by requesting location data thus allowiing much longer sessions. Data is never stored anywhere, only fetched.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -443,7 +457,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leemin.SecondHand;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leemin.SecondHand1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -477,6 +491,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		055E46C329B3431400E0C01D /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.6.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		055E46C429B3431400E0C01D /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 055E46C329B3431400E0C01D /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6F24805E29B1A0B000F2DAA2 /* Project object */;
 }

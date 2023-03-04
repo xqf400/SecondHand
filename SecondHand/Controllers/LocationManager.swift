@@ -62,7 +62,9 @@ class LocationManager: NSObject, ObservableObject
 {
     var status: Status? = nil
 
-    private let locationManager: CLLocationManager
+    var locationManager: CLLocationManager
+    
+    @Published var authorizationStatus: CLAuthorizationStatus?
     
     override init()
     {
@@ -116,9 +118,15 @@ extension LocationManager: CLLocationManagerDelegate
     {
         switch status
         {
-        case .notDetermined: break
-        case .restricted, .denied, .authorizedWhenInUse: self.status = .failure(Error.requiresAlwaysAuthorization)
-        case .authorizedAlways: self.start()
+        case .notDetermined:
+            authorizationStatus = .notDetermined
+            break
+        case .restricted, .denied, .authorizedWhenInUse:
+            authorizationStatus = .restricted
+            self.status = .failure(Error.requiresAlwaysAuthorization)
+        case .authorizedAlways:
+            authorizationStatus = .authorizedWhenInUse
+            self.start()
         @unknown default: break
         }
     }
