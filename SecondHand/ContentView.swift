@@ -36,8 +36,15 @@ func setCrumbDate() {
         StatusManager.sharedInstance().setCrumb("Length Error")
     }
 }
+func setCrumbWeather(str: String) {
+    if (str + " ▶").utf8CString.count <= 256 {
+        StatusManager.sharedInstance().setCrumb(str)
+    } else {
+        StatusManager.sharedInstance().setCrumb("Length Error")
+    }
+}
 func setCrumbWeather() {
-    var locationDataManager = LocationManager()
+    let locationDataManager = LocationManager()
     guard let lat = locationDataManager.locationManager.location?.coordinate.latitude else {
         return
     }
@@ -54,23 +61,21 @@ func setCrumbWeather() {
         StatusManager.sharedInstance().setCrumb("error")
     }
 }
-func modelIdentifier() -> String {
-    var sysinfo = utsname()
-    uname(&sysinfo)
-    return String(bytes: Data(bytes: &sysinfo.machine, count: Int(_SYS_NAMELEN)), encoding: .ascii)!.trimmingCharacters(in: .controlCharacters)
-}
 
 
 
-struct ContentView: View {
+
+struct ContentView: View, WeatherManagerDelegate {
+    func didUpdateWeather(weather: DailyWeatherModel) {
+        //setCrumbWeather(str: "test")
+    }
 
     
     @State private var timeTextEnabled: Bool = StatusManager.sharedInstance().isTimeOverridden()
     @State private var crumbTextEnabled: Bool = StatusManager.sharedInstance().isCrumbOverridden()
     @State private var crumbWeatherTextEnabled: Bool = StatusManager.sharedInstance().isCrumbOverridden()
-    let infoStr = "Model: \(modelIdentifier()), iOS Version: \(UIDevice.current.systemVersion)"
     
-    //@StateObject var locationDataManager = LocationManager()
+    @StateObject var locationDataManager = LocationManager()
 
     
     //@State private var timeAs24: Bool = UserDefaults.standard.bool(forKey: "Time24Hour")
@@ -81,7 +86,6 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text(infoStr)
             Text(timeTextEnabled || crumbTextEnabled || crumbWeatherTextEnabled ? "Running" : "Stopped")
                 .foregroundColor(timeTextEnabled || crumbTextEnabled ? .green : .red)
                 .font(.title2)
@@ -129,7 +133,18 @@ struct ContentView: View {
                 if new {
                     UserDefaults.standard.set(true, forKey: "WeatherIsEnabled")
                     setCrumbWeather()
-
+                    /*
+                    guard let lang = locationDataManager.locationManager.location?.coordinate.latitude else {
+                        return
+                    }
+                    guard let long = locationDataManager.locationManager.location?.coordinate.longitude else {
+                        return
+                    }
+                    networkManager.fetchWeather(lat: lang, lon: long) { str in
+                        setCrumbWeather(str: str)
+                    } failure: { error in
+                        print(error)
+                    }*/
                     crumbWeatherTextEnabled = StatusManager.sharedInstance().isCrumbOverridden()
                 } else {
                     UserDefaults.standard.set(false, forKey: "WeatherIsEnabled")
@@ -157,8 +172,9 @@ struct ContentView: View {
                 // check if it was disabled elsewhere
                 UserDefaults.standard.set(crumbWeatherTextEnabled, forKey: "WeatherIsEnabled")
             }
+            networkManager.delegate = self
             
-            setCrumbWeather()
+
             
             backgroundController.setup()
         }
