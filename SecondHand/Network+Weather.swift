@@ -15,7 +15,6 @@ private let apiKey = "a6b243f000737fa523434d1e8fc4d1a7"
 
 let dailyUrl = "https://api.openweathermap.org/data/2.5/weather?&appid=\(apiKey)&units=metric&lang=en"
 
-var networkManager = Network()
 
 struct DailyWeatherMain: Codable {
     let temp: Double
@@ -60,27 +59,19 @@ struct DailyWeatherModel {
     }
 }
 
-protocol WeatherManagerDelegate {
-    func didUpdateWeather(weather: DailyWeatherModel)
-}
 
-
-//MARK: Network
-final class Network {
-    var delegate: WeatherManagerDelegate?
-    func fetchWeather (lat: Double, lon: Double, success: @escaping (_ str: String) -> Void, failure: @escaping (_ error: String) -> Void){
-        let locatedDailyUrl = dailyUrl + "&lon=\(lon)&lat=\(lat)"
-        AF.request(locatedDailyUrl).responseDecodable(of: DailyWeather.self) { [weak self] response in
-            switch response.result {
-            case .success(let value):
-                print("value: \(value)")
-                let temp = "\(value.main.temp) Grad"
-                success(temp)
-            case .failure(let error):
-                print(error.localizedDescription)
-                failure(error.localizedDescription)
-            }
+func fetchWeather (lat: Double, lon: Double, success: @escaping (_ str: String) -> Void, failure: @escaping (_ error: String) -> Void){
+    let locatedDailyUrl = dailyUrl + "&lon=\(lon)&lat=\(lat)"
+    AF.request(locatedDailyUrl).responseDecodable(of: DailyWeather.self) { response in
+        switch response.result {
+        case .success(let weather):
+            print("weather: \(weather)")
+            let temp = Double(round(10 * weather.main.temp) / 10)
+            print("temp: \(temp)")
+        case .failure(let error):
+            print(error.localizedDescription)
+            failure(error.localizedDescription)
         }
     }
-    
 }
+

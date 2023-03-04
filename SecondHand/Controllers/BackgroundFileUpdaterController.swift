@@ -62,6 +62,9 @@ class BackgroundFileUpdaterController: ObservableObject {
             if UserDefaults.standard.bool(forKey: "DateIsEnabled") == true {
                 setCrumbDate()
             }
+            if UserDefaults.standard.bool(forKey: "WeatherIsEnabled") == true {
+                setCrumbWeather()
+            }
         }
     }
 }
